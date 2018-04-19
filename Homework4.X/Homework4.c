@@ -87,13 +87,13 @@ void waves(){
   
     int i =0;
     int value =0;
-    for(i = 0; i < 10; i++) {
+    for(i = 0; i < 100; i++) {
 		sinwave[i] = 512 + 512 * sin(2 * 3.14 * 10 * (i % 100) / 1000);  // to generate the sin wave
         if(i<50)
-        {trianglewave[i] = i * 1024/5;
-        value = i * 1024/5;}
+        {trianglewave[i] = i * 1024/50;
+        value = i * 1024/50;}
         else 
-        trianglewave[i] = value -  (i * 1024/5);}
+        trianglewave[i] = value -  (i * 1024/50);}
 }
 
 
@@ -127,12 +127,12 @@ int main() {
    setVoltage(1, 0);
     while(1) {
         static int count = 0;
-        if (_CP0_GET_COUNT() >= TIME/2/100) {
+        if (_CP0_GET_COUNT() >= TIME/2/1000) {
             _CP0_SET_COUNT(0);
             setVoltage(0, sinwave[count]);
             setVoltage(1, trianglewave[count]);
             count++;
-            if (count > 9)
+            if (count > 99)
                 count = 0;
         }
     }
