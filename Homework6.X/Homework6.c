@@ -136,7 +136,7 @@ int main() {
          sprintf(message,"Hello World! %d",k);
          LCD_drawString(28, 32, message, WHITE,BLACK); 
          
-         LCD_progressbar(k+12,70,k,80,BLUE,RED);                    
+         LCD_progressbar(k+12,42,k,80,BLUE,RED);                    
          
          sprintf(message,"FPS: %5.2f",fps);
          LCD_drawString(28, 100, message, WHITE,BLACK); 
