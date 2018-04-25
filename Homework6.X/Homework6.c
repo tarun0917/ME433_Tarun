@@ -58,26 +58,26 @@ unsigned char spi_io(unsigned char o) {
 void LCD_drawChar(short x, short y, char character,short txtcolour, short bckcolour)
 {
     int i=0,j=0;
-    for(i=0;i<5;i++)
+    for(i=0;i<5;i++)                                               // printing a 8x5 pixel which represents a character
         for(j=0;j<8;j++)
-            if((ASCII[character-0x20][i]>>j)&1)
-                LCD_drawPixel(x+i,y+j,txtcolour);
+            if((ASCII[character-0x20][i]>>j)&1)                    // And operation with 1 to check if a value exists there or not 
+                LCD_drawPixel(x+i,y+j,txtcolour);                  // To draw the pixel on the screen
             else
                 LCD_drawPixel(x+i,y+j,bckcolour);
 }
 
-void LCD_drawString(short x, short y, char* message,short txtcolour, short bckcolour)
+void LCD_drawString(short x, short y, char* message,short txtcolour, short bckcolour)  // function draws the entire string 
 {
     int i=0;
     while(message[i])
     {
-        LCD_drawChar((x+5*i),y,message[i],txtcolour,bckcolour);
+        LCD_drawChar((x+5*i),y,message[i],txtcolour,bckcolour);    
         i++;
     }
 }
 
 
-void LCD_progressbar(short x, short y, short currentvalue, short percentage, short startcolour, short endcolour)
+void LCD_progressbar(short x, short y, short currentvalue, short percentage, short startcolour, short endcolour)  //function to draw the progress bar line by line
 {
     int i=0;
     for(i=0;i<5;i++)
@@ -91,7 +91,7 @@ void LCD_progressbar(short x, short y, short currentvalue, short percentage, sho
 void delay(void)
 {
     _CP0_SET_COUNT(0);
-    while(_CP0_GET_COUNT() < 48000000/30){
+    while(_CP0_GET_COUNT() < 48000000/20){
          }
 }
 
@@ -136,14 +136,14 @@ int main() {
          sprintf(message,"Hello World! %d",k);
          LCD_drawString(28, 32, message, WHITE,BLACK); 
          
-         LCD_progressbar(k+12,70,k,80,BLUE,RED);
+         LCD_progressbar(k+12,70,k,80,BLUE,RED);                    
          
          sprintf(message,"FPS: %5.2f",fps);
-         LCD_drawString(28, 90, message, WHITE,BLACK); 
-         fps = 24000000.0/_CP0_GET_COUNT();
+         LCD_drawString(28, 100, message, WHITE,BLACK); 
+         fps = 24000000.0/_CP0_GET_COUNT();                       // to calculate the FPS, 1sec (in terms of count) /total time take for the function to run 
          delay();
         }
-        LCD_clearScreen(BLACK);
+        LCD_clearScreen(BLACK);                                   // to clear the entire screen to a certain colour
     }
     return 0;
 }
