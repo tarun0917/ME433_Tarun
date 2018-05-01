@@ -116,7 +116,7 @@ void drawx(short x, short y, float value, short startcolour, short endcolour)  /
        
         for(i=0;i<50;i++)
             for(j=0;j<4;j++)
-                LCD_drawPixel(x+4-i,y+j,endcolour);
+                LCD_drawPixel(x-i+4,y+j,endcolour);
     }
     else if(value>0)
     {
@@ -130,7 +130,7 @@ void drawx(short x, short y, float value, short startcolour, short endcolour)  /
             
           for(i=0;i<50;i++)
             for(j=0;j<4;j++)
-                LCD_drawPixel(x+4+i,y+j,endcolour);
+                LCD_drawPixel(x+i,y+j,endcolour);
     }
        
        
@@ -152,7 +152,7 @@ void drawy(short x, short y, float value, short startcolour, short endcolour)  /
             
          for(i=0;i<50;i++)
             for(j=0;j<4;j++)
-                LCD_drawPixel(x+j,y+4-i,endcolour);
+                LCD_drawPixel(x+j,y-i,endcolour);
     }
     else if(value>0)
     {
@@ -166,7 +166,7 @@ void drawy(short x, short y, float value, short startcolour, short endcolour)  /
             
           for(i=0;i<50;i++)
             for(j=0;j<4;j++)
-                LCD_drawPixel(x+j,y+4+i,endcolour);
+                LCD_drawPixel(x+j,y+i,endcolour);
     }
        
        
@@ -237,6 +237,7 @@ int main() {
     LCD_clearScreen(BLACK);
     name = whoami();
     
+    
 
   
     while(1) {
@@ -251,10 +252,10 @@ int main() {
       signed short accY = (data[11] << 8) | data[10];
       signed short accZ = (data[13] << 8) | data[12];
       
+      
       for(i=0;i<4;i++)
           for(j=0;j<4;j++)
               LCD_drawPixel(60+i,100+j,WHITE);
-              
       
       float finaccX = accX*0.0061; 
       float finaccY = accY*0.0061;
@@ -272,10 +273,11 @@ int main() {
         {
           sprintf(message,"WHO_AM_I = %d",name);
           LCD_drawString(5, 5, message, WHITE,BLACK); 
+          LATAINV = 0x0010;
         }
       
-      delay();
-      LATAINV = 0x0010;
+     
+      
    
       
     }
