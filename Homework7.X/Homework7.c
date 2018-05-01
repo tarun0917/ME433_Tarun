@@ -113,6 +113,10 @@ void drawx(short x, short y, float value, short startcolour, short endcolour)  /
             else
                 for(j=0;j<4;j++)
                     LCD_drawPixel(x+i,y+j,endcolour);
+       
+        for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+4-i,y+j,endcolour);
     }
     else if(value>0)
     {
@@ -123,6 +127,10 @@ void drawx(short x, short y, float value, short startcolour, short endcolour)  /
             else
                 for(j=0;j<4;j++)
                     LCD_drawPixel(x-i,y+j,endcolour);
+            
+          for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+4+i,y+j,endcolour);
     }
        
        
@@ -141,6 +149,10 @@ void drawy(short x, short y, float value, short startcolour, short endcolour)  /
             else
                 for(j=0;j<4;j++)
                     LCD_drawPixel(x+j,y+i,endcolour);
+            
+         for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+j,y+4-i,endcolour);
     }
     else if(value>0)
     {
@@ -151,6 +163,10 @@ void drawy(short x, short y, float value, short startcolour, short endcolour)  /
             else
                 for(j=0;j<4;j++)
                     LCD_drawPixel(x+j,y-i,endcolour);
+            
+          for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+j,y+4+i,endcolour);
     }
        
        
@@ -237,7 +253,7 @@ int main() {
       
       for(i=0;i<4;i++)
           for(j=0;j<4;j++)
-              LCD_drawPixel(60+i,70+j,WHITE);
+              LCD_drawPixel(60+i,100+j,WHITE);
               
       
       float finaccX = accX*0.0061; 
@@ -249,8 +265,8 @@ int main() {
      
       
       
-      drawx(60,70,finaccX,WHITE,BLACK);
-      drawy(60,70,finaccY,WHITE,BLACK);
+      drawx(60,100,finaccX,WHITE,BLACK);
+      drawy(60,100,finaccY,WHITE,BLACK);
       
       if(name==105)
         {
