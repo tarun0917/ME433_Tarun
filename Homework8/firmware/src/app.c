@@ -62,10 +62,10 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define SLAVE_ADDRESS 0x6b
 #define length 14
 
-    unsigned char name = 0;
-    unsigned char data[14];
-    char message[30];
-    int i,j;
+unsigned char name = 0;
+unsigned char data[14];
+char message[30];
+int i,j;
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -141,21 +141,21 @@ unsigned char whoami(void)
 }
 
 void I2C_read_multiple(unsigned char * data) { 
-        int i;
-        i2c_master_start();
-        i2c_master_send((SLAVE_ADDRESS << 1));
-        i2c_master_send(0x20);
-        i2c_master_restart(); 
-        i2c_master_send((SLAVE_ADDRESS << 1) | 1); 
-        for (i = 0; i < length; i++) 
-        {
-            data[i] = i2c_master_recv(); 
-            if (i==13) 
-                i2c_master_ack(1);
-            else 
-                i2c_master_ack(0); 
+    int i;
+    i2c_master_start();
+    i2c_master_send((SLAVE_ADDRESS << 1));
+    i2c_master_send(0x20);
+    i2c_master_restart(); 
+    i2c_master_send((SLAVE_ADDRESS << 1) | 1); 
+    for (i = 0; i < length; i++) 
+       {
+        data[i] = i2c_master_recv(); 
+        if (i==13) 
+            i2c_master_ack(1);
+        else 
+            i2c_master_ack(0); 
         }
-        i2c_master_stop();
+    i2c_master_stop();
 }
 
 void drawx(short x, short y, float value, short startcolour, short endcolour)  //function to draw the progress bar line by line
@@ -314,10 +314,6 @@ void APP_Initialize ( void )
     _CP0_SET_COUNT(0);
     LCD_clearScreen(BLACK);
     name = whoami();
-    
-    
-
-    
     
 }
 
