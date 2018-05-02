@@ -180,8 +180,7 @@ void APP_Tasks ( void )
             if (appInitialized)
             {
                 appData.state = APP_STATE_SERVICE_TASKS;
-                delay();
-                LATAINV = 0x0010;
+                
                 
             }
             break;
@@ -190,7 +189,8 @@ void APP_Tasks ( void )
         case APP_STATE_SERVICE_TASKS:
         {
             
-            
+            delay();
+                LATAINV = 0x0010;
             break;
         }
 
