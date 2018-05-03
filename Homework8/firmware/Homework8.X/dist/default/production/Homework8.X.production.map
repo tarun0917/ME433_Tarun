@@ -450,6 +450,14 @@ Discarded input sections
  .data          0x00000000        0x0 build/default/production/_ext/1360937237/main.o
  .bss           0x00000000        0x0 build/default/production/_ext/1360937237/main.o
  .reginfo       0x00000000       0x18 build/default/production/_ext/1360937237/main.o
+ .text          0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .data          0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .bss           0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .reginfo       0x00000000       0x18 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .text          0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
+ .data          0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
+ .bss           0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
+ .reginfo       0x00000000       0x18 build/default/production/_ext/1360937237/ST7735.o
  .text          0x00000000        0x0 build/default/production/_ext/1198890485/sys_int_pic32.o
  .data          0x00000000        0x0 build/default/production/_ext/1198890485/sys_int_pic32.o
  .bss           0x00000000        0x0 build/default/production/_ext/1198890485/sys_int_pic32.o
@@ -464,14 +472,6 @@ Discarded input sections
                 0x00000000       0x54 build/default/production/_ext/1198890485/sys_int_pic32.o
  .text.SYS_INT_ExternalInterruptTriggerSet
                 0x00000000       0x28 build/default/production/_ext/1198890485/sys_int_pic32.o
- .text          0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
- .data          0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
- .bss           0x00000000        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
- .reginfo       0x00000000       0x18 build/default/production/_ext/1360937237/i2c_master_noint.o
- .text          0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
- .data          0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
- .bss           0x00000000        0x0 build/default/production/_ext/1360937237/ST7735.o
- .reginfo       0x00000000       0x18 build/default/production/_ext/1360937237/ST7735.o
  .text          0x00000000        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
  .data          0x00000000        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
  .bss           0x00000000        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
@@ -768,9 +768,9 @@ LOAD build/default/production/_ext/1688732426/system_exceptions.o
 LOAD build/default/production/_ext/1688732426/system_tasks.o
 LOAD build/default/production/_ext/1360937237/app.o
 LOAD build/default/production/_ext/1360937237/main.o
-LOAD build/default/production/_ext/1198890485/sys_int_pic32.o
 LOAD build/default/production/_ext/1360937237/i2c_master_noint.o
 LOAD build/default/production/_ext/1360937237/ST7735.o
+LOAD build/default/production/_ext/1198890485/sys_int_pic32.o
 LOAD ..\..\..\..\..\..\..\..\..\microchip\harmony\v2_05_01\bin\framework\peripheral\PIC32MX250F128B_peripherals.a
                 0x00000001                __MPLAB_BUILD = 0x1
                 0x00000000                _min_heap_size = 0x0
@@ -1384,9 +1384,9 @@ END GROUP
  .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1688732426/system_tasks.o
  .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1360937237/app.o
  .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1360937237/main.o
- .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1198890485/sys_int_pic32.o
  .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
  .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1360937237/ST7735.o
+ .mdebug.abi32  0xa0000058        0x0 build/default/production/_ext/1198890485/sys_int_pic32.o
  .mdebug.abi32  0xa0000058        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .mdebug.abi32  0xa0000058        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .mdebug.abi32  0xa0000058        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1455,9 +1455,9 @@ END GROUP
  .comment       0x00000000       0x3d build/default/production/_ext/1688732426/system_tasks.o
  .comment       0x00000000       0x3d build/default/production/_ext/1360937237/app.o
  .comment       0x00000000       0x3d build/default/production/_ext/1360937237/main.o
- .comment       0x00000000       0x3d build/default/production/_ext/1198890485/sys_int_pic32.o
  .comment       0x00000000       0x3d build/default/production/_ext/1360937237/i2c_master_noint.o
  .comment       0x00000000       0x3d build/default/production/_ext/1360937237/ST7735.o
+ .comment       0x00000000       0x3d build/default/production/_ext/1198890485/sys_int_pic32.o
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1510,11 +1510,11 @@ END GROUP
  .debug_aranges
                 0x00000310       0x20 build/default/production/_ext/1360937237/main.o
  .debug_aranges
-                0x00000330       0x48 build/default/production/_ext/1198890485/sys_int_pic32.o
+                0x00000330       0x50 build/default/production/_ext/1360937237/i2c_master_noint.o
  .debug_aranges
-                0x00000378       0x50 build/default/production/_ext/1360937237/i2c_master_noint.o
+                0x00000380       0x60 build/default/production/_ext/1360937237/ST7735.o
  .debug_aranges
-                0x000003c8       0x60 build/default/production/_ext/1360937237/ST7735.o
+                0x000003e0       0x48 build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_aranges
                 0x00000428       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_aranges
@@ -1555,9 +1555,9 @@ END GROUP
  .debug_info    0x00009e69      0xb69 build/default/production/_ext/1688732426/system_tasks.o
  .debug_info    0x0000a9d2     0x1a72 build/default/production/_ext/1360937237/app.o
  .debug_info    0x0000c444      0x1b9 build/default/production/_ext/1360937237/main.o
- .debug_info    0x0000c5fd     0x1147 build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_info    0x0000d744      0x726 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_info    0x0000de6a     0x13f6 build/default/production/_ext/1360937237/ST7735.o
+ .debug_info    0x0000c5fd      0x726 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_info    0x0000cd23     0x13f6 build/default/production/_ext/1360937237/ST7735.o
+ .debug_info    0x0000e119     0x1147 build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_info    0x0000f260       0xf3 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_info    0x0000f353       0xcc c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_info    0x0000f41f       0xd4 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1583,9 +1583,9 @@ END GROUP
  .debug_abbrev  0x00000ce2       0xd3 build/default/production/_ext/1688732426/system_tasks.o
  .debug_abbrev  0x00000db5      0x297 build/default/production/_ext/1360937237/app.o
  .debug_abbrev  0x0000104c       0x93 build/default/production/_ext/1360937237/main.o
- .debug_abbrev  0x000010df      0x237 build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_abbrev  0x00001316      0x107 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_abbrev  0x0000141d      0x16b build/default/production/_ext/1360937237/ST7735.o
+ .debug_abbrev  0x000010df      0x107 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_abbrev  0x000011e6      0x16b build/default/production/_ext/1360937237/ST7735.o
+ .debug_abbrev  0x00001351      0x237 build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_abbrev  0x00001588       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_abbrev  0x000015b0       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_abbrev  0x000015d8       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1611,9 +1611,9 @@ END GROUP
  .debug_line    0x00001bd2      0x19f build/default/production/_ext/1688732426/system_tasks.o
  .debug_line    0x00001d71      0x31e build/default/production/_ext/1360937237/app.o
  .debug_line    0x0000208f       0xcb build/default/production/_ext/1360937237/main.o
- .debug_line    0x0000215a      0x2dd build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_line    0x00002437      0x1af build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_line    0x000025e6      0x287 build/default/production/_ext/1360937237/ST7735.o
+ .debug_line    0x0000215a      0x1af build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_line    0x00002309      0x287 build/default/production/_ext/1360937237/ST7735.o
+ .debug_line    0x00002590      0x2dd build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_line    0x0000286d       0xa5 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_line    0x00002912       0x92 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_line    0x000029a4       0x96 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1641,9 +1641,9 @@ END GROUP
  .debug_frame   0x00000470       0x28 build/default/production/_ext/1688732426/system_tasks.o
  .debug_frame   0x00000498      0x140 build/default/production/_ext/1360937237/app.o
  .debug_frame   0x000005d8       0x28 build/default/production/_ext/1360937237/main.o
- .debug_frame   0x00000600       0x90 build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_frame   0x00000690       0x80 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_frame   0x00000710       0xec build/default/production/_ext/1360937237/ST7735.o
+ .debug_frame   0x00000600       0x80 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_frame   0x00000680       0xec build/default/production/_ext/1360937237/ST7735.o
+ .debug_frame   0x0000076c       0x90 build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_frame   0x000007fc       0x2c c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_frame   0x00000828       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_frame   0x00000848       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1669,9 +1669,9 @@ END GROUP
  .debug_str     0x000000fa        0x0 build/default/production/_ext/1688732426/system_tasks.o
  .debug_str     0x000000fa       0x34 build/default/production/_ext/1360937237/app.o
  .debug_str     0x0000012e        0x0 build/default/production/_ext/1360937237/main.o
+ .debug_str     0x0000012e        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_str     0x0000012e        0x0 build/default/production/_ext/1360937237/ST7735.o
  .debug_str     0x0000012e       0x1d build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_str     0x0000014b        0x0 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_str     0x0000014b        0x0 build/default/production/_ext/1360937237/ST7735.o
  .debug_str     0x0000014b        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_str     0x0000014b        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_str     0x0000014b        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1696,9 +1696,9 @@ END GROUP
  .debug_loc     0x000001ca      0x7ca build/default/production/_ext/822048611/sys_ports_static.o
  .debug_loc     0x00000994       0x21 build/default/production/_ext/1688732426/system_init.o
  .debug_loc     0x000009b5      0x603 build/default/production/_ext/1360937237/app.o
- .debug_loc     0x00000fb8       0x7c build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_loc     0x00001034       0x21 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_loc     0x00001055      0x3d0 build/default/production/_ext/1360937237/ST7735.o
+ .debug_loc     0x00000fb8       0x21 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_loc     0x00000fd9      0x3d0 build/default/production/_ext/1360937237/ST7735.o
+ .debug_loc     0x000013a9       0x7c build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_loc     0x00001425       0x2c c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_loc     0x00001451      0xa6a c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3\libgcc.a(_udivdi3.o)
  .debug_loc     0x00001ebb      0xa3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3\libgcc.a(_umoddi3.o)
@@ -1734,9 +1734,9 @@ END GROUP
  .debug_ranges  0x00000210       0x10 build/default/production/_ext/1688732426/system_tasks.o
  .debug_ranges  0x00000220       0x58 build/default/production/_ext/1360937237/app.o
  .debug_ranges  0x00000278       0x10 build/default/production/_ext/1360937237/main.o
- .debug_ranges  0x00000288       0x50 build/default/production/_ext/1198890485/sys_int_pic32.o
- .debug_ranges  0x000002d8       0x40 build/default/production/_ext/1360937237/i2c_master_noint.o
- .debug_ranges  0x00000318       0x50 build/default/production/_ext/1360937237/ST7735.o
+ .debug_ranges  0x00000288       0x40 build/default/production/_ext/1360937237/i2c_master_noint.o
+ .debug_ranges  0x000002c8       0x50 build/default/production/_ext/1360937237/ST7735.o
+ .debug_ranges  0x00000318       0x50 build/default/production/_ext/1198890485/sys_int_pic32.o
  .debug_ranges  0x00000368       0x10 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_ranges  0x00000378       0x10 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_ranges  0x00000388       0x10 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1774,11 +1774,11 @@ END GROUP
  .gnu.attributes
                 0x00000090       0x10 build/default/production/_ext/1360937237/main.o
  .gnu.attributes
-                0x000000a0       0x10 build/default/production/_ext/1198890485/sys_int_pic32.o
+                0x000000a0       0x10 build/default/production/_ext/1360937237/i2c_master_noint.o
  .gnu.attributes
-                0x000000b0       0x10 build/default/production/_ext/1360937237/i2c_master_noint.o
+                0x000000b0       0x10 build/default/production/_ext/1360937237/ST7735.o
  .gnu.attributes
-                0x000000c0       0x10 build/default/production/_ext/1360937237/ST7735.o
+                0x000000c0       0x10 build/default/production/_ext/1198890485/sys_int_pic32.o
  .gnu.attributes
                 0x000000d0       0x10 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .gnu.attributes
