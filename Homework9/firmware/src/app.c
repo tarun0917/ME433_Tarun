@@ -63,6 +63,8 @@ uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
 int startTime = 0;
+int length = 14;
+unsigned char data[14];
 #define SLAVE_ADDRESS 0x6b
 // *****************************************************************************
 /* Application Data
@@ -106,6 +108,24 @@ void initgyro(void)
     i2c_master_send(SLAVE_ADDRESS<<1);
     i2c_master_send(0x12);
     i2c_master_send(0x04);
+    i2c_master_stop();
+}
+
+void I2C_read_multiple(unsigned char * data) { 
+    int i;
+    i2c_master_start();
+    i2c_master_send((SLAVE_ADDRESS << 1));
+    i2c_master_send(0x20);
+    i2c_master_restart(); 
+    i2c_master_send((SLAVE_ADDRESS << 1) | 1); 
+    for (i = 0; i < length; i++) 
+       {
+        data[i] = i2c_master_recv(); 
+        if (i==13) 
+            i2c_master_ack(1);
+        else 
+            i2c_master_ack(0); 
+        }
     i2c_master_stop();
 }
 /*******************************************************
@@ -449,8 +469,17 @@ void APP_Tasks(void) {
             appData.writeTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
-
-            len = sprintf(dataOut, "%d\r\n", i);
+            
+            I2C_read_multiple(data);
+              signed short temp = (data[1] << 8) | data[0]; //16-bit short
+              signed short gyX = (data[3] << 8) | data[2];
+              signed short gyY = (data[5] << 8) | data[4];
+              signed short gyZ = (data[7] << 8) | data[6];
+              signed short accX = (data[9] << 8) | data[8];
+              signed short accY = (data[11] << 8) | data[10];
+              signed short accZ = (data[13] << 8) | data[12];
+              
+            len = sprintf(dataOut, "%d %d %d %d %d %d\r\n", gyX,gyY,gyZ,accX,accY,accZ);
             i++;
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
