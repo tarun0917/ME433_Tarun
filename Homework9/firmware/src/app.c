@@ -51,6 +51,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include <stdio.h>
 #include <xc.h>
+#include "i2c_master_noint.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -62,7 +63,7 @@ uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
 int startTime = 0;
-
+#define SLAVE_ADDRESS 0x6b
 // *****************************************************************************
 /* Application Data
   Summary:
@@ -86,6 +87,27 @@ APP_DATA appData;
 /* TODO:  Add any necessary callback functions.
  */
 
+void initgyro(void)
+{
+    i2c_master_setup();
+    i2c_master_start();
+    i2c_master_send(SLAVE_ADDRESS<<1);
+    i2c_master_send(0x10);
+    i2c_master_send(0x82);
+    i2c_master_stop();
+    
+    i2c_master_start();
+    i2c_master_send(SLAVE_ADDRESS<<1);
+    i2c_master_send(0x11);
+    i2c_master_send(0x88);
+    i2c_master_stop();
+    
+    i2c_master_start();
+    i2c_master_send(SLAVE_ADDRESS<<1);
+    i2c_master_send(0x12);
+    i2c_master_send(0x04);
+    i2c_master_stop();
+}
 /*******************************************************
  * USB CDC Device Events - Application Event Handler
  *******************************************************/
@@ -331,6 +353,7 @@ void APP_Initialize(void) {
     /* Set up the read buffer */
     appData.readBuffer = &readBuffer[0];
 
+    initgyro();
     startTime = _CP0_GET_COUNT();
 }
 
