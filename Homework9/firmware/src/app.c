@@ -64,6 +64,7 @@ uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
 int startTime = 0;
 int length = 14;
+int flag = 0;
 unsigned char data[14];
 #define SLAVE_ADDRESS 0x6b
 // *****************************************************************************
@@ -110,6 +111,8 @@ void initgyro(void)
     i2c_master_send(0x04);
     i2c_master_stop();
 }
+
+
 
 void I2C_read_multiple(unsigned char * data) { 
     int i;
@@ -478,26 +481,37 @@ void APP_Tasks(void) {
               signed short accX = (data[9] << 8) | data[8];
               signed short accY = (data[11] << 8) | data[10];
               signed short accZ = (data[13] << 8) | data[12];
-            
-            if(appData.readBuffer[0]==114)
-                 len = sprintf(dataOut, "%d %d %d %d %d %d\r\n", gyX,gyY,gyZ,accX,accY,accZ);
-            else
-                {   
-                 len = 1;
-                 dataOut[0]=0;
-                }
+   
               
-              
+            len = sprintf(dataOut, "%d %d %d %d %d %d %d\r\n",i, gyX,gyY,gyZ,accX,accY,accZ);
+            i++;
             if (appData.isReadComplete) {
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         appData.readBuffer, 1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                if (appData.readBuffer[0]==114) {
+                    flag = 1;
+                    i = 0; 
+                }
             } else {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                if (flag == 1) {
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                startTime = _CP0_GET_COUNT();
+                    if (i==100) {
+                        flag = 0;
+                        i = 0; 
+                    }
+                }
+                else { 
+                    len = 1;
+                    dataOut[0] = 0; 
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                        &appData.writeTransferHandle, dataOut, len,
+                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                }
+               startTime = _CP0_GET_COUNT();
             }
             break;
              
