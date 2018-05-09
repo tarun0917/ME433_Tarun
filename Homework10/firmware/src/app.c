@@ -77,19 +77,25 @@ int startTime = 0;
 int length = 14;
 int flag = 0;
 unsigned char data[14];
-
+float temp= 0 ;
 
 
 float MAFval = 0;
 float MAFlen = 3;
 float MAFcoef[3];
 float MAFtemp[3];
-unsigned char index;
+unsigned char arrindex;
 unsigned char MAFindex;
 
 
-float temp= 0 ;
+float FIRval = 0;
+float FIRlen = 6;
+float FIRcoef[6] = {   -0.0078  ,  0.0645  ,  0.4433   , 0.4433  ,  0.0645 ,  -0.0078};
+float FIRtemp[6];
+unsigned char FIRindex;
 
+float IIRzold = 0;
+float IIRznew = 0;
 
 // *****************************************************************************
 /* Application Data
@@ -538,6 +544,11 @@ void APP_Initialize(void) {
         MAFcoef[i] = 1/MAFlen;
     }
     
+        for(i=0;i<FIRlen;i++)
+    {
+        FIRtemp[i] = 0; //initialising all the values to 0
+    }
+    
 }
 
 /******************************************************************************
@@ -643,18 +654,33 @@ void APP_Tasks(void) {
              //Moving Average Filter
              MAFval = 0;
              MAFtemp[MAFindex] = accZ;
-             for(index=0;index<MAFlen;index++)
+             for(arrindex=0;arrindex<MAFlen;arrindex++)
              {
-                 MAFval = MAFcoef[index]*MAFtemp[index] + MAFval;
+                 MAFval = MAFcoef[arrindex]*MAFtemp[arrindex] + MAFval;
+             }
+             
+             
+             //FIR Filter   
+             FIRval = 0;
+             FIRtemp[FIRindex] = accZ;
+             for(arrindex=0;arrindex<FIRlen;arrindex++)
+             {
+                 FIRval = FIRcoef[arrindex]*FIRtemp[arrindex] + FIRval;
              }
              
              MAFindex++;
             if(MAFindex==MAFlen)
                 MAFindex=0;
             
-
+             FIRindex++;
+            if(FIRindex==FIRlen)
+                FIRindex=0;
             
-            len = sprintf(dataOut, "%d %d %5.2f\r\n",i,accZ,MAFval);
+             //IIR Filter
+            IIRznew = 0.25*IIRzold + 0.75*accZ; 
+            IIRzold = IIRznew; 
+            
+            len = sprintf(dataOut, "%d %d %5.2f %5.2f %5.2f\r\n",i,accZ,MAFval,FIRval,IIRznew);
             i++; 
             if (appData.isReadComplete) {
                 dataOut[0] = 0; 
