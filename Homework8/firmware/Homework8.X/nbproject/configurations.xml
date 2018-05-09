@@ -58,8 +58,8 @@
           <itemPath>../../../../../../../../../microchip/harmony/v2_05_01/framework/system/system.h</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <itemPath>../src/ST7735.h</itemPath>
       <itemPath>../src/i2c_master_noint.h</itemPath>
+      <itemPath>../src/ST7735.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

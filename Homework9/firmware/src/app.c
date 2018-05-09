@@ -53,6 +53,17 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <xc.h>
 #include "i2c_master_noint.h"
 
+
+
+#include "i2c_master_noint.h"
+#include"ST7735.h"
+
+#define TIME 48000000
+
+
+unsigned char name = 0;
+char message[30];
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -61,7 +72,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i = 0;
+int len, i = 0,j;
 int startTime = 0;
 int length = 14;
 int flag = 0;
@@ -112,7 +123,20 @@ void initgyro(void)
     i2c_master_stop();
 }
 
-
+unsigned char whoami(void)
+{
+    unsigned char value;
+    i2c_master_start();
+    i2c_master_send((SLAVE_ADDRESS << 1));        // hardware address and write bit
+    i2c_master_send(0x0F);                     // PORT register = 0x09
+    i2c_master_restart();                      // send a RESTART so we can begin reading 
+    i2c_master_send((SLAVE_ADDRESS << 1) | 1); // send slave address, left shifted by 1,
+                                              // and then a 1 in lsb, indicating read
+    value = i2c_master_recv();                // receive a byte from the bus
+    i2c_master_ack(1);                      // send NACK (1):  master needs no more bytes
+    i2c_master_stop(); 
+    return value;
+}
 
 void I2C_read_multiple(unsigned char * data) { 
     int i;
@@ -130,6 +154,108 @@ void I2C_read_multiple(unsigned char * data) {
             i2c_master_ack(0); 
         }
     i2c_master_stop();
+}
+
+void drawx(short x, short y, float value, short startcolour, short endcolour)  //function to draw the progress bar line by line
+{
+    int i,j;
+    
+    if(value<0)
+    {
+        for(i=0;i<50;i++)
+            if(i<-(value))
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+i,y+j,startcolour);
+            else
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+i,y+j,endcolour);
+       
+        for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x-i+4,y+j,endcolour);
+    }
+    else if(value>0)
+    {
+        for(i=0;i<50;i++)
+            if(i<value)
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x-i,y+j,startcolour);
+            else
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x-i,y+j,endcolour);
+            
+          for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+i,y+j,endcolour);
+    }
+       
+       
+}
+
+void drawy(short x, short y, float value, short startcolour, short endcolour)  //function to draw the progress bar line by line
+{
+    int i,j;
+    
+    if(value<0)
+    {
+        for(i=0;i<50;i++)
+            if(i<-(value))
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+j,y+i,startcolour);
+            else
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+j,y+i,endcolour);
+            
+         for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+j,y-i,endcolour);
+    }
+    else if(value>0)
+    {
+        for(i=0;i<50;i++)
+            if(i<value)
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+j,y-i,startcolour);
+            else
+                for(j=0;j<4;j++)
+                    LCD_drawPixel(x+j,y-i,endcolour);
+            
+          for(i=0;i<50;i++)
+            for(j=0;j<4;j++)
+                LCD_drawPixel(x+j,y+i,endcolour);
+    }
+       
+       
+}
+
+
+void LCD_drawChar(short x, short y, char character,short txtcolour, short bckcolour)
+{
+    int i=0,j=0;
+    for(i=0;i<5;i++)                                               // printing a 8x5 pixel which represents a character
+        for(j=0;j<8;j++)
+            if((ASCII[character-0x20][i]>>j)&1)                    // And operation with 1 to check if a value exists there or not 
+                LCD_drawPixel(x+i,y+j,txtcolour);                  // To draw the pixel on the screen
+            else
+                LCD_drawPixel(x+i,y+j,bckcolour);
+}
+
+void LCD_drawString(short x, short y, char* message,short txtcolour, short bckcolour)  // function draws the entire string 
+{
+    int i=0;
+    while(message[i])
+    {
+        LCD_drawChar((x+5*i),y,message[i],txtcolour,bckcolour);    
+        i++;
+    }
+}
+
+
+void delay(void)
+{
+    _CP0_SET_COUNT(0);
+    while(_CP0_GET_COUNT() < TIME/100){
+    }
 }
 /*******************************************************
  * USB CDC Device Events - Application Event Handler
@@ -376,7 +502,21 @@ void APP_Initialize(void) {
     /* Set up the read buffer */
     appData.readBuffer = &readBuffer[0];
 
+     // do your TRIS and LAT commands here
+    TRISAbits.TRISA4 = 0;
+    LATAbits.LATA4 =1 ;
+    
+    
+
     initgyro();
+    SPI1_init();
+    LCD_init();
+    __builtin_enable_interrupts();
+
+   
+    _CP0_SET_COUNT(0);
+    LCD_clearScreen(BLACK);
+    name = whoami();
     startTime = _CP0_GET_COUNT();
 }
 
@@ -474,21 +614,16 @@ void APP_Tasks(void) {
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
             
             I2C_read_multiple(data);
-              signed short temp = (data[1] << 8) | data[0]; //16-bit short
-              signed short gyX = (data[3] << 8) | data[2];
-              signed short gyY = (data[5] << 8) | data[4];
-              signed short gyZ = (data[7] << 8) | data[6];
-              signed short accX = (data[9] << 8) | data[8];
-              signed short accY = (data[11] << 8) | data[10];
               signed short accZ = (data[13] << 8) | data[12];
-   
               
-            len = sprintf(dataOut, "%d %d %d %d %d %d %d\r\n",i, gyX,gyY,gyZ,accX,accY,accZ);
+              
+            len = sprintf(dataOut, "%d %d\r\n",i,accZ);
             i++;
             if (appData.isReadComplete) {
+                dataOut[0] = 0; 
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
+                        dataOut, 1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 if (appData.readBuffer[0]==114) {
                     flag = 1;

@@ -96,6 +96,7 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/i2c_master_noint.h</itemPath>
+      <itemPath>../src/ST7735.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -136,6 +137,7 @@
         <itemPath>../src/app.c</itemPath>
         <itemPath>../src/main.c</itemPath>
         <itemPath>../../../Homework8/firmware/src/i2c_master_noint.c</itemPath>
+        <itemPath>../../../Homework8/firmware/src/ST7735.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="framework" projectFiles="true">
         <logicalFolder name="f2" displayName="driver" projectFiles="true">
