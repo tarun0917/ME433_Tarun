@@ -90,8 +90,8 @@ unsigned char MAFindex;
 
 float FIRval = 0;
 float FIRlen = 3;
-float FIRcoef[FIRlen] = {       0.0462  ,  0.9076  ,  0.0462};
-float FIRtemp[FIRlen];
+float FIRcoef[3] = {0.0462  ,  0.9076  ,  0.0462};
+float FIRtemp[3];
 unsigned char FIRindex;
 
 float IIRzold = 0;
@@ -645,7 +645,7 @@ void APP_Tasks(void) {
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
             
             I2C_read_multiple(data);
-              signed short accZ = (data[13] << 8) | data[12];
+            signed short accZ = (data[13] << 8) | data[12];
               
              float finaccZ = accZ * 0.000063; 
              sprintf(message,"ACC_Z = %d  ",accZ);
@@ -679,6 +679,14 @@ void APP_Tasks(void) {
              //IIR Filter
             IIRznew = 0.25*IIRzold + 0.75*accZ; 
             IIRzold = IIRznew; 
+            
+            if(name==105)
+                {
+                  sprintf(message,"WHO_AM_I = %d",name);
+                  LCD_drawString(5, 5, message, WHITE,BLACK); 
+                  LATAINV = 0x0010;
+                }
+            
             
             len = sprintf(dataOut, "%d %d %5.2f %5.2f %5.2f\r\n",i,accZ,MAFval,FIRval,IIRznew);
             i++; 
