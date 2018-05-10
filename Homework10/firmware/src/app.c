@@ -89,9 +89,9 @@ unsigned char MAFindex;
 
 
 float FIRval = 0;
-float FIRlen = 6;
-float FIRcoef[6] = {   -0.0078  ,  0.0645  ,  0.4433   , 0.4433  ,  0.0645 ,  -0.0078};
-float FIRtemp[6];
+float FIRlen = 3;
+float FIRcoef[FIRlen] = {       0.0462  ,  0.9076  ,  0.0462};
+float FIRtemp[FIRlen];
 unsigned char FIRindex;
 
 float IIRzold = 0;
