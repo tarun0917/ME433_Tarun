@@ -379,17 +379,26 @@ void APP_Tasks(void) {
              I2C_read_multiple(data);
              signed short accX = (data[9] << 8) | data[8];
              signed short accY = (data[11] << 8) | data[10];
-             
-             float finaccX = accX * 0.0061;
-             float finaccY = accY * 0.0061;
+
+             float finaccX = accX*0.000061; 
+             float finaccY = accY*0.000061;
+
             // every 50th loop, or 20 times per second
-            if (movement_length > 50) {
+            if (movement_length = 10) {
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t) 1;
-                appData.yCoordinate = (int8_t) 1;
+                appData.xCoordinate = (int8_t)-5.0*finaccY;
+                appData.yCoordinate = (int8_t)5.0*finaccX;
                 movement_length = 0;
             }
+            else
+                {
+                appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
+                appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
+                appData.xCoordinate = (int8_t)0;
+                appData.yCoordinate = (int8_t)0;
+            }
+                
 
             if (!appData.isMouseReportSendBusy) {
                 /* This means we can send the mouse report. The
