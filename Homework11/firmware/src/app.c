@@ -387,8 +387,8 @@ void APP_Tasks(void) {
             if (movement_length = 10) {
                 appData.mouseButton[0] = MOUSE_BUTTON_STATE_RELEASED;
                 appData.mouseButton[1] = MOUSE_BUTTON_STATE_RELEASED;
-                appData.xCoordinate = (int8_t)-5.0*finaccY;
-                appData.yCoordinate = (int8_t)5.0*finaccX;
+                appData.xCoordinate = (int8_t)-6.0*finaccY;
+                appData.yCoordinate = (int8_t)6.0*finaccX;
                 movement_length = 0;
             }
             else
