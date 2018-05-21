@@ -12,15 +12,15 @@ public class MainActivity extends AppCompatActivity {
     TextView myTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myControl = (SeekBar) findViewById(R.id.seek1);
 
         myTextView = (TextView) findViewById(R.id.textView01);
-        myTextView.setText("Swipe bar to get value!");
+        myTextView.setText("Slide bar!");
         setMyControlListener();
     }
-
     private void setMyControlListener() {
         myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -43,4 +43,3 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
