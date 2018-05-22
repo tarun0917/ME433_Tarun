@@ -39,10 +39,12 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
 
-    SeekBar myControl;
+    SeekBar myControlred;
+    SeekBar myControlblue;
 
     static long prevtime = 0; // for FPS calculation
-    int thresh = 10; // comparison value
+    int threshred = 0; // comparison value
+    int threshblue = 0; // comparison value
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
-        myControl = (SeekBar) findViewById(R.id.seek1);
+        myControlred = (SeekBar) findViewById(R.id.seek1);
+        myControlblue = (SeekBar) findViewById(R.id.seek2);
 
         setMyControlListener();
         // see if the app has permission to use the camera
@@ -73,14 +76,33 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     }
     private void setMyControlListener() {
-        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        myControlred.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                thresh = progressChanged;
+                threshred = progressChanged;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        myControlblue.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChanged = progress;
+                threshblue = progressChanged;
             }
 
             @Override
@@ -139,9 +161,9 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++)
                 {
-                    if ((green(pixels[i]) - red(pixels[i])) > thresh)
+                    if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
                     {
-                        pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
                     }
                 }
                 // update the row
@@ -150,12 +172,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         }
 
-        // draw a circle at some position
-        int pos = 50;
-        canvas.drawCircle(pos, 240, 5, paint1); // x position, y position, diameter, color
 
-        // write the pos as text
-        canvas.drawText("pos = " + pos, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
