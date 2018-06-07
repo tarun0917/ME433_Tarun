@@ -52,8 +52,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
-        myControlred = (SeekBar) findViewById(R.id.seek2);
-        myControlblue = (SeekBar) findViewById(R.id.seek3);
+        myControlred = (SeekBar) findViewById(R.id.seek1);
+        myControlblue = (SeekBar) findViewById(R.id.seek2);
 
         setMyControlListener();
         // see if the app has permission to use the camera
