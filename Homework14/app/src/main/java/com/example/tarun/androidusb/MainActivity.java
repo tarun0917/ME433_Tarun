@@ -1,12 +1,20 @@
 package com.example.tarun.androidusb;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.hardware.Camera;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -27,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
 
     SeekBar myControl;
     TextView myTextView;
@@ -39,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
+
+
+
+    private Camera mCamera;
+    private TextureView mTextureView;
+    private SurfaceView mSurfaceView;
+    private SurfaceHolder mSurfaceHolder;
+    private Bitmap bmp = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+    private Canvas canvas = new Canvas(bmp);
+    private Paint paint1 = new Paint();
+    private TextView mTextView;
+
+    SeekBar myControlred;
+    SeekBar myControlblue;
+
+    static long prevtime = 0; // for FPS calculation
+    int threshred = 0; // comparison value
+    int threshblue = 0; // comparison value
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

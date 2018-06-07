@@ -52,8 +52,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
-        myControlred = (SeekBar) findViewById(R.id.seek2);
-        myControlblue = (SeekBar) findViewById(R.id.seek3);
+        myControlred = (SeekBar) findViewById(R.id.seek1);
+        myControlblue = (SeekBar) findViewById(R.id.seek2);
 
         setMyControlListener();
         // see if the app has permission to use the camera
@@ -151,7 +151,9 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-
+            int sum_mr = 0; // the sum of the mass times the radius
+            int sum_m = 0; // the sum of the masses
+            int COM=0;
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             int startY = 0; // which row in the bitmap to analyze to read
             for(int j=0; j < 480 ;j=j+2)
@@ -163,12 +165,25 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
                 {
                     if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
                     {
-                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
+                        pixels[i] = rgb(1, 1, 1); // set the pixel to almost 100% black
+
+                        sum_m = sum_m + green(pixels[i])+red(pixels[i])+blue(pixels[i]);
+                        sum_mr = sum_mr + (green(pixels[i])+red(pixels[i])+blue(pixels[i]))*i;
                     }
                 }
                 // update the row
                 bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+
             }
+            // only use the data if there were a few pixels identified, otherwise you might get a divide by 0 error
+            if(sum_m>5){
+                COM = sum_mr / sum_m;
+            }
+            else{
+                COM = 0;
+            }
+            // draw a circle at some position
+            canvas.drawCircle(COM, 240, 5, paint1); // x position, y position, diameter, color
 
         }
 
