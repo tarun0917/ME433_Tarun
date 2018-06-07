@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         setMyControlListener();
         // see if the app has permission to use the camera
-       // ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+        // ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
