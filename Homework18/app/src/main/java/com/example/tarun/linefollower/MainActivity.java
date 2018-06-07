@@ -1,13 +1,26 @@
 package com.example.tarun.linefollower;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -27,7 +40,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+import static android.graphics.Color.blue;
+import static android.graphics.Color.green;
+import static android.graphics.Color.red;
+import static android.graphics.Color.rgb;
+
+public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
 
     SeekBar myControl;
     TextView myTextView;
@@ -39,10 +57,40 @@ public class MainActivity extends AppCompatActivity {
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
+
+
+    //From Camera Start
+    private Camera mCamera;
+    private TextureView mTextureView;
+    private SurfaceView mSurfaceView;
+    private SurfaceHolder mSurfaceHolder;
+    private Bitmap bmp = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+    private Canvas canvas = new Canvas(bmp);
+    private Paint paint1 = new Paint();
+    private TextView mTextView;
+    SeekBar myControlred;
+    SeekBar myControlblue;
+
+    static long prevtime = 0; // for FPS calculation
+    int threshred = 0; // comparison value
+    int threshblue = 0; // comparison value
+    //From Camera End
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        //From Camera Start
+        setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
+
+        mTextView = (TextView) findViewById(R.id.cameraStatus);
+        myControlred = (SeekBar) findViewById(R.id.seek2);
+        myControlblue = (SeekBar) findViewById(R.id.seek3);
+        //From Camera End
+
+
         setContentView(R.layout.activity_main);
         myControl = (SeekBar) findViewById(R.id.seek1);
 
@@ -53,6 +101,25 @@ public class MainActivity extends AppCompatActivity {
         myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         myTextView3 = (TextView) findViewById(R.id.textView03);
         button = (Button) findViewById(R.id.button1);
+
+        //From Camera Start
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+            mSurfaceHolder = mSurfaceView.getHolder();
+
+            mTextureView = (TextureView) findViewById(R.id.textureview);
+            mTextureView.setSurfaceTextureListener(this);
+
+            // set the paintbrush for writing text on the image
+            paint1.setColor(0xffff0000); // red
+            paint1.setTextSize(24);
+
+            mTextView.setText("started camera");
+        } else {
+            mTextView.setText("no camera permissions");
+        }
+        //From Camera End
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,10 +132,61 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setMyControlListener();
+
+        //From Camera Start
+        setMyControlListener1();
+        //From Camera End
+
+        setMyControlListener2();
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+
     }
-    private void setMyControlListener() {
+
+    //From Camera Start
+    private void setMyControlListener1() {
+        myControlred.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChanged = progress;
+                threshred = progressChanged;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        myControlblue.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChanged = progress;
+                threshblue = progressChanged;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+    //From Camera End
+
+    private void setMyControlListener2() {
         myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
@@ -198,4 +316,73 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    //From Camera Start
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        mCamera = Camera.open();
+        Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setPreviewSize(640, 480);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
+        parameters.setAutoExposureLock(true); // keep the white balance constant
+        mCamera.setParameters(parameters);
+        mCamera.setDisplayOrientation(90); // rotate to portrait mode
+
+        try {
+            mCamera.setPreviewTexture(surface);
+            mCamera.startPreview();
+        } catch (IOException ioe) {
+            // Something bad happened
+        }
+    }
+
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        // Ignored, Camera does all the work for us
+    }
+
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        mCamera.stopPreview();
+        mCamera.release();
+        return true;
+    }
+
+
+    // the important function
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        // every time there is a new Camera preview frame
+        mTextureView.getBitmap(bmp);
+
+        final Canvas c = mSurfaceHolder.lockCanvas();
+        if (c != null) {
+
+            int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+            int startY = 0; // which row in the bitmap to analyze to read
+            for(int j=0; j < 480 ;j=j+2)
+            {
+                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+
+                // in the row, see if there is more green than red
+                for (int i = 0; i < bmp.getWidth(); i++)
+                {
+                    if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
+                    {
+                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
+                    }
+                }
+                // update the row
+                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+            }
+
+        }
+
+
+        c.drawBitmap(bmp, 0, 0, null);
+        mSurfaceHolder.unlockCanvasAndPost(c);
+
+        // calculate the FPS to see how fast the code is running
+        long nowtime = System.currentTimeMillis();
+        long diff = nowtime - prevtime;
+        mTextView.setText("FPS " + 1000 / diff);
+        prevtime = nowtime;
+    }
+    //From Camera End
 }
