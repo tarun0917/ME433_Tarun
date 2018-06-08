@@ -81,15 +81,41 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //From Camera Start
+        setContentView(R.layout.activity_main);
+        myControl = (SeekBar) findViewById(R.id.seek1);
+
+        myTextView = (TextView) findViewById(R.id.textView01);
+        myTextView.setText("Slide bar!");
+        myTextView2 = (TextView) findViewById(R.id.textView02);
+        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
+        myTextView3 = (TextView) findViewById(R.id.textView03);
+        button = (Button) findViewById(R.id.button1);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myTextView2.setText("value on click is "+myControl.getProgress());
+                String sendString = String.valueOf(myControl.getProgress()) + '\n';
+                try {
+                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
+                } catch (IOException e) { }
+            }
+
+        });
+        setMyControlListener2();
+        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        //Camera Code Start
+
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
+
         mTextView = (TextView) findViewById(R.id.cameraStatus);
         myControlred = (SeekBar) findViewById(R.id.seek2);
         myControlblue = (SeekBar) findViewById(R.id.seek3);
 
-
-        //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1); // comment this line when the USB and camera apps are shared
+        setMyControlListener1();
+        // see if the app has permission to use the camera
+        //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
@@ -105,44 +131,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         } else {
             mTextView.setText("no camera permissions");
         }
-        //From Camera End
-
-
-        setContentView(R.layout.activity_main);
-        myControl = (SeekBar) findViewById(R.id.seek1);
-
-        myTextView = (TextView) findViewById(R.id.textView01);
-        myTextView.setText("Slide bar!");
-
-        myTextView2 = (TextView) findViewById(R.id.textView02);
-        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
-        myTextView3 = (TextView) findViewById(R.id.textView03);
-        button = (Button) findViewById(R.id.button1);
-
-
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myTextView2.setText("value on click is "+myControl.getProgress());
-                String sendString = String.valueOf(myControl.getProgress()) + '\n';
-                try {
-                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
-                } catch (IOException e) { }
-            }
-        });
-
-
-        //From Camera Start
-        setMyControlListener1();
-        //From Camera End
-
-        setMyControlListener2();
-
-        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-
+        //Camera Code End
     }
 
     //From Camera Start
