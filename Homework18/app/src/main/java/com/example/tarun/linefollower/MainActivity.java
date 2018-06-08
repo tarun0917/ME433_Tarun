@@ -13,6 +13,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -79,30 +80,16 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         //From Camera Start
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
-
         mTextView = (TextView) findViewById(R.id.cameraStatus);
         myControlred = (SeekBar) findViewById(R.id.seek2);
         myControlblue = (SeekBar) findViewById(R.id.seek3);
-        //From Camera End
 
 
-        setContentView(R.layout.activity_main);
-        myControl = (SeekBar) findViewById(R.id.seek1);
-
-        myTextView = (TextView) findViewById(R.id.textView01);
-        myTextView.setText("Slide bar!");
-
-        myTextView2 = (TextView) findViewById(R.id.textView02);
-        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
-        myTextView3 = (TextView) findViewById(R.id.textView03);
-        button = (Button) findViewById(R.id.button1);
-
-        //From Camera Start
+        //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1); // comment this line when the USB and camera apps are shared
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
@@ -119,6 +106,20 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             mTextView.setText("no camera permissions");
         }
         //From Camera End
+
+
+        setContentView(R.layout.activity_main);
+        myControl = (SeekBar) findViewById(R.id.seek1);
+
+        myTextView = (TextView) findViewById(R.id.textView01);
+        myTextView.setText("Slide bar!");
+
+        myTextView2 = (TextView) findViewById(R.id.textView02);
+        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
+        myTextView3 = (TextView) findViewById(R.id.textView03);
+        button = (Button) findViewById(R.id.button1);
+
+
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +139,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         //From Camera End
 
         setMyControlListener2();
+
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
 
@@ -207,6 +209,74 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             }
         });
     }
+    //From Camera Start
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        mCamera = Camera.open();
+        Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setPreviewSize(640, 480);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
+        parameters.setAutoExposureLock(true); // keep the white balance constant
+        mCamera.setParameters(parameters);
+        mCamera.setDisplayOrientation(90); // rotate to portrait mode
+
+        try {
+            mCamera.setPreviewTexture(surface);
+            mCamera.startPreview();
+        } catch (IOException ioe) {
+            // Something bad happened
+        }
+    }
+
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        // Ignored, Camera does all the work for us
+    }
+
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        mCamera.stopPreview();
+        mCamera.release();
+        return true;
+    }
+
+
+    // the important function
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        // every time there is a new Camera preview frame
+        mTextureView.getBitmap(bmp);
+
+        final Canvas c = mSurfaceHolder.lockCanvas();
+        if (c != null) {
+
+            int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+            int startY = 0; // which row in the bitmap to analyze to read
+            for(int j=0; j < 480 ;j=j+2)
+            {
+                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+
+                // in the row, see if there is more green than red
+                for (int i = 0; i < bmp.getWidth(); i++)
+                {
+                    if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
+                    {
+                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
+                    }
+                }
+                // update the row
+                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+            }
+
+        }
+
+
+        c.drawBitmap(bmp, 0, 0, null);
+        mSurfaceHolder.unlockCanvasAndPost(c);
+
+        // calculate the FPS to see how fast the code is running
+        long nowtime = System.currentTimeMillis();
+        long diff = nowtime - prevtime;
+        mTextView.setText("FPS " + 1000 / diff);
+        prevtime = nowtime;
+    }
+    //From Camera End
     private final SerialInputOutputManager.Listener mListener =
             new SerialInputOutputManager.Listener() {
                 @Override
@@ -317,72 +387,5 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         }
     }
 
-    //From Camera Start
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        mCamera = Camera.open();
-        Camera.Parameters parameters = mCamera.getParameters();
-        parameters.setPreviewSize(640, 480);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
-        parameters.setAutoExposureLock(true); // keep the white balance constant
-        mCamera.setParameters(parameters);
-        mCamera.setDisplayOrientation(90); // rotate to portrait mode
 
-        try {
-            mCamera.setPreviewTexture(surface);
-            mCamera.startPreview();
-        } catch (IOException ioe) {
-            // Something bad happened
-        }
-    }
-
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-        // Ignored, Camera does all the work for us
-    }
-
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        mCamera.stopPreview();
-        mCamera.release();
-        return true;
-    }
-
-
-    // the important function
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        // every time there is a new Camera preview frame
-        mTextureView.getBitmap(bmp);
-
-        final Canvas c = mSurfaceHolder.lockCanvas();
-        if (c != null) {
-
-            int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
-            int startY = 0; // which row in the bitmap to analyze to read
-            for(int j=0; j < 480 ;j=j+2)
-            {
-                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
-
-                // in the row, see if there is more green than red
-                for (int i = 0; i < bmp.getWidth(); i++)
-                {
-                    if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
-                    {
-                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
-                    }
-                }
-                // update the row
-                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
-            }
-
-        }
-
-
-        c.drawBitmap(bmp, 0, 0, null);
-        mSurfaceHolder.unlockCanvasAndPost(c);
-
-        // calculate the FPS to see how fast the code is running
-        long nowtime = System.currentTimeMillis();
-        long diff = nowtime - prevtime;
-        mTextView.setText("FPS " + 1000 / diff);
-        prevtime = nowtime;
-    }
-    //From Camera End
 }
