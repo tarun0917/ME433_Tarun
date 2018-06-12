@@ -48,7 +48,10 @@ import static android.graphics.Color.rgb;
 
 public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
 
-    SeekBar myControl;
+    SeekBar myControl1;
+    SeekBar myControl2;
+    SeekBar myControl3;
+    SeekBar myControl4;
     TextView myTextView;
     Button button;
     TextView myTextView2;
@@ -69,48 +72,42 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
     private TextView mTextView;
-    SeekBar myControlred;
+    SeekBar myControlgreen;
     SeekBar myControlblue;
 
     static long prevtime = 0; // for FPS calculation
-    int threshred = 0; // comparison value
+    int threshgreen = 0; // comparison value
     int threshblue = 0; // comparison value
     //From Camera End
 
+    int Kp = 0, Kd = 0 , Ki = 0;
+    int MAXDUTY = 0;
+    int COM=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myControl = (SeekBar) findViewById(R.id.seek1);
+        myControl1 = (SeekBar) findViewById(R.id.seek1);
+
 
         myTextView = (TextView) findViewById(R.id.textView01);
         myTextView.setText("Slide bar!");
         myTextView2 = (TextView) findViewById(R.id.textView02);
         myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         myTextView3 = (TextView) findViewById(R.id.textView03);
-        button = (Button) findViewById(R.id.button1);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myTextView2.setText("value on click is "+myControl.getProgress());
-                String sendString = String.valueOf(myControl.getProgress()) + '\n';
-                try {
-                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
-                } catch (IOException e) { }
-            }
 
-        });
+
         setMyControlListener2();
-        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
         //Camera Code Start
 
-        setContentView(R.layout.activity_main);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
-        myControlred = (SeekBar) findViewById(R.id.seek2);
+        myControlgreen = (SeekBar) findViewById(R.id.seek2);
         myControlblue = (SeekBar) findViewById(R.id.seek3);
 
         setMyControlListener1();
@@ -132,18 +129,20 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             mTextView.setText("no camera permissions");
         }
         //Camera Code End
+
+        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
     }
 
     //From Camera Start
     private void setMyControlListener1() {
-        myControlred.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        myControlgreen.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                threshred = progressChanged;
+                threshgreen = progressChanged;
             }
 
             @Override
@@ -178,14 +177,15 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     //From Camera End
 
     private void setMyControlListener2() {
-        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+        myControl1.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                myTextView.setText("The value is: "+progress);
+
+                Kp = progressChanged;
             }
 
             @Override
@@ -198,6 +198,8 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             }
         });
     }
+
+
     //From Camera Start
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
@@ -234,28 +236,44 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
+            int sum_mr = 0; // the sum of the mass times the radius
+            int sum_m = 0; // the sum of the masses
 
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
             int startY = 0; // which row in the bitmap to analyze to read
-            for(int j=0; j < 480 ;j=j+2)
+            for(int j=0; j < 10 ;j=j+2)
             {
                 bmp.getPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
 
                 // in the row, see if there is more green than red
                 for (int i = 0; i < bmp.getWidth(); i++)
                 {
-                    if ((green(pixels[i]) - red(pixels[i])) > threshred & (green(pixels[i]) - blue(pixels[i])) > threshblue)
+                    if ((red(pixels[i]) - green(pixels[i])) > threshgreen & (red(pixels[i]) - blue(pixels[i])) > threshblue)
                     {
-                        pixels[i] = rgb(0, 0, 255); // over write the pixel with pure blue
+                        pixels[i] = rgb(1, 1, 1); // set the pixel to almost 100% black
+
+                        sum_m = sum_m + green(pixels[i])+red(pixels[i])+blue(pixels[i]);
+                        sum_mr = sum_mr + (green(pixels[i])+red(pixels[i])+blue(pixels[i]))*i;
                     }
                 }
                 // update the row
                 bmp.setPixels(pixels, 0, bmp.getWidth(), 0, j, bmp.getWidth(), 1);
+
             }
-
+            // only use the data if there were a few pixels identified, otherwise you might get a divide by 0 error
+            if(sum_m>5){
+                COM = sum_mr / sum_m;
+            }
+            else{
+                COM = 0;
+            }
+            // draw a circle at some position
+            canvas.drawCircle(COM, 240, 5, paint1); // x position, y position, diameter, color
+            String sendString = String.valueOf(COM) + ' ' + String.valueOf(Kp) + '\n';
+            try {
+                sPort.write(sendString.getBytes(), 10); // 10 is the timeout
+            } catch (IOException e) { }
         }
-
-
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
